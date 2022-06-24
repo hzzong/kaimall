@@ -9,4 +9,8 @@ public interface UserService {
 
     String login(String loginName, String password);
 
+    boolean updateUserInfo(String password, Long id);
+
+    boolean logout(Long id);
+
 }

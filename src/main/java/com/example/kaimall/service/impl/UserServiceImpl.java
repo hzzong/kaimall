@@ -8,6 +8,7 @@ import com.example.kaimall.domain.repo.UserTokenRepo;
 import com.example.kaimall.service.UserService;
 import com.example.kaimall.util.NumberUtil;
 import com.example.kaimall.util.SystemUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,13 +53,13 @@ public class UserServiceImpl implements UserService {
         }
         String token = getNewToken(System.currentTimeMillis() + "", user.getId());
 
-        UserToken userToken = userTokenRepo.findUserTokenByUserId(user.getId());
+        UserToken userToken = userTokenRepo.findUserTokenById(user.getId());
 
         Date now = new Date();
         Date expireTime = new Date(now.getTime() + 2 * 24 * 3600 * 1000);
         if (userToken == null){
             userToken = new UserToken();
-            userToken.setUserId(user.getId());
+            userToken.setId(user.getId());
         }
         userToken.setToken(token);
         userToken.setUpdataTime(now);
@@ -77,5 +78,30 @@ public class UserServiceImpl implements UserService {
     private String getNewToken(String timeStr, Long userId) {
         String src = timeStr + userId + numberUtil.genRandomNum(4);
         return systemUtil.genToken(src);
+    }
+
+    @Override
+    public boolean updateUserInfo(String password, Long id){
+        User user = userRepo.findUserById(id);
+        if (user == null){
+            return false;
+        }
+        if (!StringUtils.isBlank(password)){
+            user.setPassword(password);
+        }
+        if (userRepo.save(user) != null){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean logout(Long id){
+       try {
+           userTokenRepo.deleteById(id);
+           return Boolean.TRUE;
+       } catch (Exception e){
+           return Boolean.FALSE;
+       }
     }
 }

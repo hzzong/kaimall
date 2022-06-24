@@ -3,6 +3,7 @@ package com.example.kaimall.api;
 import com.example.kaimall.api.VO.UserVO;
 import com.example.kaimall.api.param.UserLoginParam;
 import com.example.kaimall.api.param.UserRegisterParam;
+import com.example.kaimall.api.param.UserUpdateParam;
 import com.example.kaimall.common.Constants;
 import com.example.kaimall.common.ServiceResultEnum;
 import com.example.kaimall.config.annotation.TokenToUser;
@@ -79,6 +80,34 @@ public class UserAPI {
         UserVO mallUserVO = new UserVO();
         BeanUtils.copyProperties(user, mallUserVO);
         return resultGenerator.genSuccessResult(mallUserVO);
+    }
+
+    @PutMapping("/user/info")
+    public Result updateInfo(@RequestBody UserUpdateParam param, @TokenToUser User loginMallUser) {
+        Boolean flag = userService.updateUserInfo(param.getPassword(), loginMallUser.getId());
+        if (flag) {
+            //返回成功
+            Result result = resultGenerator.genSuccessResult();
+            return result;
+        } else {
+            //返回失败
+            Result result = resultGenerator.genFailResult("修改失败");
+            return result;
+        }
+    }
+
+    @PostMapping("/user/logout")
+    public Result<String> logout(@TokenToUser User loginMallUser) {
+        Boolean logoutResult = userService.logout(loginMallUser.getId());
+
+        log.info("logout api,loginMallUser={}", loginMallUser.getId());
+
+        //登出成功
+        if (logoutResult) {
+            return resultGenerator.genSuccessResult();
+        }
+        //登出失败
+        return resultGenerator.genFailResult("logout error");
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.Date;
 public class UserToken {
 
     @Id
-    private Long userId;
+    private Long id;
 
     private String token;
 

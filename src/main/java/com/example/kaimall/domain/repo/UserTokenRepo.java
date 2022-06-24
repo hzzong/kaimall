@@ -5,10 +5,11 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserTokenRepo extends CrudRepository<UserToken, Long> {
 
-    UserToken findUserTokenByUserId(Long id);
+    UserToken findUserTokenById(Long id);
 
     UserToken save(UserToken userToken);
 
     UserToken findUserTokenByToken(String token);
+
 
 }

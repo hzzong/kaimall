@@ -42,7 +42,7 @@ public class TokenToUserMethodArgumentResolver implements HandlerMethodArgumentR
             if (userToken == null || userToken.getExpireTime().getTime() <= System.currentTimeMillis()){
                 throw new RuntimeException("TOKEN_EXPIRE_ERROR");
             }
-            User user = userRepo.findUserById(userToken.getUserId());
+            User user = userRepo.findUserById(userToken.getId());
             if (user == null){
                 throw new RuntimeException(("USER_NULL_ERROR"));
             }
